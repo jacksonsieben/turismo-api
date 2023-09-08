@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.utfpr.turismoapi.turismoapi.dto.TourDTO;
+import br.edu.utfpr.turismoapi.turismoapi.models.Person;
 import br.edu.utfpr.turismoapi.turismoapi.models.Tour;
+import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.TourRepository;
 
 @RestController
@@ -26,6 +28,9 @@ import br.edu.utfpr.turismoapi.turismoapi.repositories.TourRepository;
 public class TourController {
     @Autowired
     private TourRepository tourRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     @GetMapping("")
     public List<Tour> getAll() {
@@ -43,6 +48,15 @@ public class TourController {
         try {
             Tour tour = new Tour();
             BeanUtils.copyProperties(tourDTO, tour);
+    
+            // Busque e defina a agência com base no ID fornecido no DTO
+            Optional<Person> agenciaOpt = personRepository.findById(UUID.fromString(tourDTO.getAgenciaId().toString()));
+            if (agenciaOpt.isPresent()) {
+                tour.setAgencia(agenciaOpt.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Agência não encontrada");
+            }
+    
             tourRepository.save(tour);
             return ResponseEntity.status(HttpStatus.CREATED).body(tour);
         } catch (Exception e) {
@@ -50,6 +64,7 @@ public class TourController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falha ao criar passeio");
         }
     }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody TourDTO tourDTO) {

@@ -6,17 +6,16 @@ import java.util.List;
 import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,13 +28,13 @@ public class Person extends BaseModel {
     private TipoPessoaEnum tipo;
     private String cpf;
 
-    @OneToMany(mappedBy = "agencia")
+    @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
     private List<Tour> passeios;
 
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
     private List<Booking> reservasCliente;
 
-    @OneToMany(mappedBy = "agencia")
+    @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
     private List<Booking> reservasAgencia;
 
 }

@@ -27,11 +27,11 @@ import lombok.ToString;
 public class Booking extends BaseModel {
     private LocalDateTime dataInicial;
     private LocalDateTime dataFinal;
-
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cliente_id", nullable = false)
     private Person cliente;
-
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="agencia_id", nullable = false)
     private Person agencia;
