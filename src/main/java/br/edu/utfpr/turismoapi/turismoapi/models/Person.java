@@ -2,14 +2,15 @@ package br.edu.utfpr.turismoapi.turismoapi.models;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -17,6 +18,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_person")
 public class Person extends BaseModel {
     private String nome;
@@ -35,14 +38,4 @@ public class Person extends BaseModel {
     @OneToMany(mappedBy = "agencia")
     private List<Booking> reservasAgencia;
 
-
-    public Person(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt, String nome, String email,
-            LocalDateTime nascimento, TipoPessoaEnum tipo, String cpf) {
-        super(id, createdAt, updatedAt);
-        this.nome = nome;
-        this.email = email;
-        this.nascimento = nascimento;
-        this.tipo = tipo;
-        this.cpf = cpf;
-    }
 }
