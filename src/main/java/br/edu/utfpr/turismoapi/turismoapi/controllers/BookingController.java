@@ -19,7 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.utfpr.turismoapi.turismoapi.dto.BookingDTO;
 import br.edu.utfpr.turismoapi.turismoapi.models.Booking;
+import br.edu.utfpr.turismoapi.turismoapi.models.Person;
+import br.edu.utfpr.turismoapi.turismoapi.models.Tour;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.BookingRepository;
+import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
+import br.edu.utfpr.turismoapi.turismoapi.repositories.TourRepository;
 
 
 @RestController
@@ -27,6 +31,8 @@ import br.edu.utfpr.turismoapi.turismoapi.repositories.BookingRepository;
 public class BookingController {
     @Autowired
     private BookingRepository bookingRepository;
+    private PersonRepository personRepository;
+    private TourRepository tourRepository;
 
     @GetMapping("")
     public List<Booking> getAll() {
@@ -44,6 +50,16 @@ public class BookingController {
         try {
             Booking booking = new Booking();
             BeanUtils.copyProperties(bookingDTO, booking);
+            Optional<Person> personOpt = personRepository.findById(UUID.fromString(bookingDTO.getClienteId().toString()));
+            booking.setCliente(personOpt.get());
+            Optional<Person> agenciaOpt = personRepository.findById(UUID.fromString(bookingDTO.getAgenciaId().toString()));
+            booking.setAgencia(agenciaOpt.get());
+            List<Tour> listPasseios = null;
+            for (UUID tourId : bookingDTO.getPasseiosIds()) {
+                Optional<Tour> passeioOpt = tourRepository.findById(UUID.fromString(tourId.toString()));
+                listPasseios.add(passeioOpt.get());
+            }
+            booking.setPasseios(listPasseios);
             bookingRepository.save(booking);
             return ResponseEntity.status(HttpStatus.CREATED).body(booking);
         } catch (Exception e) {

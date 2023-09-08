@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.utfpr.turismoapi.turismoapi.dto.PaymentDTO;
 import br.edu.utfpr.turismoapi.turismoapi.models.Payment;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PaymentRepository;
+import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
     @Autowired
     private PaymentRepository paymentRepository;
+    private PersonRepository personRepository;
 
     @GetMapping("")
     public List<Payment> getAll() {
@@ -42,7 +44,9 @@ public class PaymentController {
     public ResponseEntity<Object> create(@RequestBody PaymentDTO paymentDTO) {
         try {
             Payment payment = new Payment();
+            
             BeanUtils.copyProperties(paymentDTO, payment);
+            
             paymentRepository.save(payment);
             return ResponseEntity.status(HttpStatus.CREATED).body(payment);
         } catch (Exception e) {
