@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.utfpr.turismoapi.turismoapi.dto.PaymentDTO;
+import br.edu.utfpr.turismoapi.turismoapi.models.Booking;
 import br.edu.utfpr.turismoapi.turismoapi.models.Payment;
+import br.edu.utfpr.turismoapi.turismoapi.repositories.BookingRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PaymentRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 
@@ -29,6 +31,10 @@ public class PaymentController {
     private PaymentRepository paymentRepository;
     private PersonRepository personRepository;
 
+    
+    @Autowired
+    private BookingRepository bookingRepository;
+    
     @GetMapping("")
     public List<Payment> getAll() {
         return paymentRepository.findAll();
@@ -46,9 +52,16 @@ public class PaymentController {
             Payment payment = new Payment();
             
             BeanUtils.copyProperties(paymentDTO, payment);
-            
-            paymentRepository.save(payment);
-            return ResponseEntity.status(HttpStatus.CREATED).body(payment);
+            Optional<Booking> bookingOpt = bookingRepository.findById(paymentDTO.getReservaId());
+            if (bookingOpt.isPresent()) {
+                Booking booking = bookingOpt.get();
+                payment.setReserva(booking); // Associe o pagamento ao Booking
+                booking.setPagamento(payment); // Associe o Booking ao pagamento (se necessário)
+                paymentRepository.save(payment);
+                return ResponseEntity.status(HttpStatus.CREATED).body(payment);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Booking não encontrado");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falha ao criar pagamento");

@@ -19,6 +19,6 @@ public class BookingDTO {
     private LocalDateTime dataInicial;
     private LocalDateTime dataFinal;
     private UUID clienteId; // Adicione o campo UUID para o cliente
-    public UUID agenciaId; // Adicione o campo UUID para a agência
+    private UUID agenciaId; // Adicione o campo UUID para a agência
     private List<UUID> passeiosIds; // Adicione uma lista de UUIDs para os passeios
 }

@@ -1,5 +1,6 @@
 package br.edu.utfpr.turismoapi.turismoapi.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +35,12 @@ public class BookingController {
     private PersonRepository personRepository;
     private TourRepository tourRepository;
 
+    @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
+    private TourRepository tourRepository;
+
     @GetMapping("")
     public List<Booking> getAll() {
         return bookingRepository.findAll();
@@ -54,7 +61,8 @@ public class BookingController {
             booking.setCliente(personOpt.get());
             Optional<Person> agenciaOpt = personRepository.findById(UUID.fromString(bookingDTO.getAgenciaId().toString()));
             booking.setAgencia(agenciaOpt.get());
-            List<Tour> listPasseios = null;
+            
+            List<Tour> listPasseios = new ArrayList<>();
             for (UUID tourId : bookingDTO.getPasseiosIds()) {
                 Optional<Tour> passeioOpt = tourRepository.findById(UUID.fromString(tourId.toString()));
                 listPasseios.add(passeioOpt.get());
