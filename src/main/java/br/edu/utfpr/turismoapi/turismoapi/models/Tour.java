@@ -2,6 +2,8 @@ package br.edu.utfpr.turismoapi.turismoapi.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,6 +33,7 @@ public class Tour extends BaseModel{
     private String itinerario;
     private String destino;
     @ManyToMany(mappedBy = "passeios")
+    @JsonIgnore
     private List<Booking> reservas;
 
 }

@@ -3,8 +3,11 @@ package br.edu.utfpr.turismoapi.turismoapi.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -33,10 +36,11 @@ public class Booking extends BaseModel {
     private Person cliente;
     
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     @JoinColumn(name="agencia_id", nullable = false)
     private Person agencia;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "booking_tour",
             joinColumns = @JoinColumn(name = "passeio_id"),

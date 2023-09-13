@@ -24,14 +24,15 @@ import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 
 
 @RestController
-@RequestMapping("/pessoa")
+@RequestMapping("/Person")
 public class PersonController {
     @Autowired
     PersonRepository personRepository;
 
     @GetMapping(value = {"", "/"})
     public List<Person> getAll(){
-        return personRepository.findAll();
+        List<Person> pessoas = personRepository.findAll();
+        return pessoas;
     }
 
     @GetMapping("/{id}")

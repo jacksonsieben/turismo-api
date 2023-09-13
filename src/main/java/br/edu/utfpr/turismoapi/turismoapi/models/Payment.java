@@ -3,6 +3,8 @@ package br.edu.utfpr.turismoapi.turismoapi.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -23,7 +25,8 @@ import lombok.ToString;
 @Table(name = "tb_payment")
 public class Payment extends BaseModel{
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reserva_id")    
+    @JsonIgnore
+    @JoinColumn(name = "reserva_id")
     private Booking reserva;
     private double valor;
     private LocalDateTime dataPagamento;

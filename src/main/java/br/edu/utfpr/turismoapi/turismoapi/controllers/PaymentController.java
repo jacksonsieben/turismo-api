@@ -25,11 +25,10 @@ import br.edu.utfpr.turismoapi.turismoapi.repositories.PaymentRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/Payment")
 public class PaymentController {
     @Autowired
     private PaymentRepository paymentRepository;
-    private PersonRepository personRepository;
 
     
     @Autowired

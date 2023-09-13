@@ -22,9 +22,10 @@ import br.edu.utfpr.turismoapi.turismoapi.models.Person;
 import br.edu.utfpr.turismoapi.turismoapi.models.Tour;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.TourRepository;
+import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
 
 @RestController
-@RequestMapping("/tour")
+@RequestMapping("/Tour")
 public class TourController {
     @Autowired
     private TourRepository tourRepository;
@@ -51,7 +52,7 @@ public class TourController {
     
             // Busque e defina a agência com base no ID fornecido no DTO
             Optional<Person> agenciaOpt = personRepository.findById(UUID.fromString(tourDTO.getAgenciaId().toString()));
-            if (agenciaOpt.isPresent()) {
+            if (agenciaOpt.isPresent() && agenciaOpt.get().getTipo() == TipoPessoaEnum.AGENCIA_VIAGEM) {
                 tour.setAgencia(agenciaOpt.get());
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Agência não encontrada");

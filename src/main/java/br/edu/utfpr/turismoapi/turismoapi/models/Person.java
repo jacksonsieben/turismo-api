@@ -3,6 +3,8 @@ package br.edu.utfpr.turismoapi.turismoapi.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,13 +30,16 @@ public class Person extends BaseModel {
     private TipoPessoaEnum tipo;
     private String cpf;
 
-    @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
-    private List<Tour> passeios;
+    // @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
+    // @JsonIgnore
+    // private List<Tour> passeios;
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    private List<Booking> reservasCliente;
+    // @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    // @JsonIgnore
+    // private List<Booking> reservasCliente;
 
-    @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
-    private List<Booking> reservasAgencia;
+    // @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
+    // @JsonIgnore
+    // private List<Booking> reservasAgencia;
 
 }
