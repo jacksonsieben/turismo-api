@@ -20,7 +20,7 @@ public class BaseModel {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public BaseModel(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BaseModel() {
         this.id = UUID.randomUUID();
         this.createdAt = updatedAt = LocalDateTime.now();
     }
