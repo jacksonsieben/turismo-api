@@ -29,17 +29,4 @@ public class Person extends BaseModel {
     private LocalDateTime nascimento;
     private TipoPessoaEnum tipo;
     private String cpf;
-
-    // @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
-    // @JsonIgnore
-    // private List<Tour> passeios;
-
-    // @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    // @JsonIgnore
-    // private List<Booking> reservasCliente;
-
-    // @OneToMany(mappedBy = "agencia", fetch = FetchType.EAGER)
-    // @JsonIgnore
-    // private List<Booking> reservasAgencia;
-
 }

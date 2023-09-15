@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID; // Importe a classe UUID para utilizar UUIDs
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +18,20 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDTO {
+    @PastOrPresent
+    @NotBlank(message = "Data inicial é obrigatória!")
+    @PastOrPresent
     private LocalDateTime dataInicial;
+
+    @NotBlank(message = "Data final é obrigatória!")
     private LocalDateTime dataFinal;
-    private UUID clienteId; // Adicione o campo UUID para o cliente
-    private UUID agenciaId; // Adicione o campo UUID para a agência
-    private List<UUID> passeiosIds; // Adicione uma lista de UUIDs para os passeios
+
+    @NotBlank(message = "Cliente é obrigatório!")
+    private UUID clienteId; 
+
+    @NotBlank(message = "Agência é obrigatória!")
+    private UUID agenciaId;
+    
+    @NotBlank(message = "Lista de passeios é obrigatória!")
+    private List<UUID> passeiosIds; 
 }

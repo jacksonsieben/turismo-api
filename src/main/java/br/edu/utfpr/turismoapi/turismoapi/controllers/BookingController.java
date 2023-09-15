@@ -25,6 +25,7 @@ import br.edu.utfpr.turismoapi.turismoapi.models.Tour;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.BookingRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.TourRepository;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -51,7 +52,7 @@ public class BookingController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> create(@RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<Object> create(@Valid @RequestBody BookingDTO bookingDTO) {
         try {
             Booking booking = new Booking();
             BeanUtils.copyProperties(bookingDTO, booking);
@@ -75,7 +76,7 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody BookingDTO bookingDTO) {
         Optional<Booking> bookingOpt = bookingRepository.findById(id);
 
         if (bookingOpt.isEmpty()) {

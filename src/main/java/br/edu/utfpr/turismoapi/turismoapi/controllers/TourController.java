@@ -23,6 +23,7 @@ import br.edu.utfpr.turismoapi.turismoapi.models.Tour;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.TourRepository;
 import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/Tour")
@@ -45,7 +46,7 @@ public class TourController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> create(@RequestBody TourDTO tourDTO) {
+    public ResponseEntity<Object> create(@Valid @RequestBody TourDTO tourDTO) {
         try {
             Tour tour = new Tour();
             BeanUtils.copyProperties(tourDTO, tour);
@@ -68,7 +69,7 @@ public class TourController {
     
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody TourDTO tourDTO) {
+    public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody TourDTO tourDTO) {
         Optional<Tour> tourOpt = tourRepository.findById(id);
 
         if (tourOpt.isEmpty()) {

@@ -22,7 +22,7 @@ import br.edu.utfpr.turismoapi.turismoapi.models.Booking;
 import br.edu.utfpr.turismoapi.turismoapi.models.Payment;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.BookingRepository;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PaymentRepository;
-import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/Payment")
@@ -46,7 +46,7 @@ public class PaymentController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> create(@RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<Object> create(@Valid @RequestBody PaymentDTO paymentDTO) {
         try {
             Payment payment = new Payment();
             
@@ -68,7 +68,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody PaymentDTO paymentDTO) {
         Optional<Payment> paymentOpt = paymentRepository.findById(id);
 
         if (paymentOpt.isEmpty()) {
