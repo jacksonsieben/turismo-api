@@ -1,13 +1,10 @@
 package br.edu.utfpr.turismoapi.turismoapi.security;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,20 +16,18 @@ import org.springframework.web.filter.CorsFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-import lombok.RequiredArgsConstructor;
-
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
+//@Configuration
+///@EnableWebSecurity
+//@RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Enable CORS and disable CSRF
-        http = http.cors(withDefaults()).csrf(csrf -> csrf.disable());
+        http = http.cors().and().csrf().disable();
 
         // Set session management to stateless
         http = http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -49,8 +44,8 @@ public class WebSecurityConfig {
 
         // Set permissions on endpoints
         http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-                .requestMatchers(HttpMethod.POST, "/person").permitAll()
+                .requestMatchers(HttpMethod.POST, "/Auth").permitAll()
+                .requestMatchers(HttpMethod.POST, "/Person").permitAll()
                 .anyRequest().authenticated();
 
         // Add JWT token filter
@@ -71,10 +66,10 @@ public class WebSecurityConfig {
     }
 
     // // Método ignora URL específicas
-    @Bean // Ignora URL's específicas
-    public WebSecurityCustomizer webSecurityCustomizer() throws Exception {
-    return web -> web.ignoring().requestMatchers("/auth");
-    }
+    // @Bean // Ignora URL's específicas
+    // public WebSecurityCustomizer webSecurityCustomizer() throws Exception {
+    // return web -> web.ignoring().requestMatchers("/auth");
+    // }
 
     // Used by Spring Security if CORS is enabled.
     @Bean
