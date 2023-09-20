@@ -29,6 +29,9 @@ public class PersonDTO {
     @Email(message = "Formato de e-mail inválido")
     private String email;
 
+    @NotBlank(message = "Senha é obrigatória")
+    private String senha;
+
     @PastOrPresent
     private LocalDateTime nascimento;
     @NotBlank(message= "CPF é obrigatório!")

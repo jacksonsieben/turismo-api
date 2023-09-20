@@ -1,24 +1,24 @@
 package br.edu.utfpr.turismoapi.turismoapi.controllers;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,117 +30,104 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.utfpr.turismoapi.turismoapi.dto.Message;
 import br.edu.utfpr.turismoapi.turismoapi.dto.PersonDTO;
 import br.edu.utfpr.turismoapi.turismoapi.models.Person;
-import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
-import jakarta.validation.Valid;
-
+import br.edu.utfpr.turismoapi.turismoapi.service.PersonService;
 
 @RestController
 @RequestMapping("/Person")
+@CrossOrigin(origins = "*")
 public class PersonController {
     @Autowired
-    PersonRepository personRepository;
+    private PersonService personService;
 
-    @GetMapping("/pages")
-    public ResponseEntity<Page<Person>> getAllPage(
-        @PageableDefault(page=0, size=10, sort="nome",
-            direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        return ResponseEntity.ok()
-            .body( personRepository.findAll(pageable) );
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @PostMapping
+    public ResponseEntity<Object> create(@RequestBody PersonDTO personDTO) {
+        if (this.personService.existsByEmail(personDTO.getEmail())) {
+            return ResponseEntity
+                    .status(HttpStatus.SEE_OTHER)
+                    .body("Conflict: E-mail exists.");
+        }
+
+        var person = new Person();
+        BeanUtils.copyProperties(personDTO, person);
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        person.setCreatedAt(now);
+        person.setUpdatedAt(now);
+        person.setSenha(passwordEncoder.encode(personDTO.getSenha()));
+
+        
+        
+        
+        
+
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(personService.save(person));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.b(e.getMessage()));
+        }
     }
 
-    @GetMapping(value = {"", "/"})
-    public List<Person> getAll() {
-        return personRepository.findAll();
+    @GetMapping
+    public ResponseEntity<Page<Person>> getAll(
+            @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok().body(personService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable String id) {
-        Optional<Person> personOpt = personRepository
-            .findById(UUID.fromString(id));
+    public ResponseEntity<Object> getById(@PathVariable UUID id) {
+        Optional<Person> person = this.personService.findById(id);
 
-        return personOpt.isPresent() 
-            ? ResponseEntity.ok(personOpt.get())
-            : ResponseEntity.notFound().build();
+        return person.isPresent()
+                ? ResponseEntity.ok(person.get())
+                : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("")
-    public ResponseEntity<Object> create(@Valid @RequestBody PersonDTO personDTO) {
-        var pes = new Person(); 
-        BeanUtils.copyProperties(personDTO, pes);
-
-        try {
-            return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body( personRepository.save(pes) );
-        } catch(Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Falha ao criar pessoa");
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable String id, 
-                    @Valid @RequestBody PersonDTO personDTO) {
-        UUID uuid;
-        try { uuid = UUID.fromString(id); }
-        catch(Exception e) {
-            return ResponseEntity
-                .badRequest()
-                .body("Formato de UUID inválido");
-        }
-
-        var person = personRepository.findById(uuid);
-
-        if(person.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        var personToUpdate = person.get();
-        BeanUtils.copyProperties(personDTO, personToUpdate);
-        personToUpdate.setUpdatedAt(LocalDateTime.now());
-
-        try {
-            return ResponseEntity.ok()
-            .body( personRepository.save(personToUpdate));
-        } catch(Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Falha ao atualizar pessoa");
-        }
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Object> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(personService.findByName(name));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable String id) {
-        UUID uuid;
-        try { 
-            uuid = UUID.fromString(id); 
-        }
-        catch(Exception e) {
-            return ResponseEntity
-                .badRequest()
-                .body("Formato de UUID inválido");
-        }
+    public ResponseEntity<Object> delete(@PathVariable UUID id) {
+        var person = personService.findById(id);
 
-        var person = personRepository.findById(uuid);
-
-        if(person.isEmpty())
+        if (person.isEmpty())
             return ResponseEntity.notFound().build();
 
-        try {
-            personRepository.delete(person.get());
-            return ResponseEntity.ok().build();
-        } catch(Exception e) {
-            e.printStackTrace();
+        personService.delete(person.get());
+        return ResponseEntity.ok().build();
+    }
 
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody PersonDTO personDTO) {
+        var person = this.personService.findById(id);
+
+        if (person.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        
+        if (this.personService.existsByEmail(personDTO.getEmail())
+                && !this.personService.existsByIdAndEmail(person.get().getId(), personDTO.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Message.b("Conflito: O e-mail já está em uso"));
         }
+
+        
+        var personToUpdate = new Person();
+        BeanUtils.copyProperties(personDTO, personToUpdate);
+        personToUpdate.setId(person.get().getId());
+        personToUpdate.setCreatedAt(person.get().getCreatedAt());
+        personToUpdate.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
+
+        return ResponseEntity.ok().body(this.personService.save(personToUpdate));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
