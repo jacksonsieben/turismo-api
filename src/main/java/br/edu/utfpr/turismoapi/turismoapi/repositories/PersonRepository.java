@@ -2,7 +2,6 @@ package br.edu.utfpr.turismoapi.turismoapi.repositories;
 
 import br.edu.utfpr.turismoapi.turismoapi.models.Person;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
