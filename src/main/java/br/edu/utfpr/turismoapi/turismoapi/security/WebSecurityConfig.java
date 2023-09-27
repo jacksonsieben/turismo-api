@@ -54,8 +54,12 @@ public class WebSecurityConfig {
 
         // Set permissions on endpoints
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/Auth").permitAll()
-                .requestMatchers(HttpMethod.POST, "/Person").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                .requestMatchers(HttpMethod.POST, "/person").permitAll()
+                .requestMatchers( "/api-docs/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/index.html").permitAll()
+                .requestMatchers(HttpMethod.GET, "/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated());
 
         // Add JWT token filter

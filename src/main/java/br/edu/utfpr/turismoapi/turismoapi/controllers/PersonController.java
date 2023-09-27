@@ -1,8 +1,8 @@
 package br.edu.utfpr.turismoapi.turismoapi.controllers;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,118 +30,123 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.utfpr.turismoapi.turismoapi.dto.Message;
 import br.edu.utfpr.turismoapi.turismoapi.dto.PersonDTO;
 import br.edu.utfpr.turismoapi.turismoapi.models.Person;
 import br.edu.utfpr.turismoapi.turismoapi.repositories.PersonRepository;
-import jakarta.validation.Valid;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/Person")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
+@Tag(name = "Person", description = "Person resource endpoints")
 public class PersonController {
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
 
-    @GetMapping("/pages")
-    public ResponseEntity<Page<Person>> getAllPage(
-        @PageableDefault(page=0, size=10, sort="nome",
-            direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        return ResponseEntity.ok()
-            .body( personRepository.findAll(pageable) );
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @PostMapping
+    public ResponseEntity<Object> create(@RequestBody PersonDTO personDTO) {
+        if (this.personRepository.existsByEmail(personDTO.getEmail())) {
+            return ResponseEntity
+                    .status(HttpStatus.SEE_OTHER)
+                    .body("Conflict: E-mail exists.");
+        }
+
+        var person = new Person();
+        BeanUtils.copyProperties(personDTO, person);
+
+        // LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        // person.setCreatedAt(now);
+        // person.setUpdatedAt(now);
+        person.setSenha(passwordEncoder.encode(personDTO.getSenha()));
+
+        // Adicionando o papel padrão para a pessoa
+
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(personRepository.save(person));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.b(e.getMessage()));
+        }
     }
 
-    @GetMapping(value = {"", "/"})
-    public List<Person> getAll() {
-        return personRepository.findAll();
+    @SecurityRequirement(name = "Authorization")
+    @GetMapping
+    public ResponseEntity<Page<Person>> getAll(
+            @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok().body(personRepository.findAll(pageable));
     }
 
+    @Operation(summary = "Retrieve a Person by Id", description = "Get a Person object by specifying its id. The response is Person object with id, name, email and birth.", tags = {
+            "Person" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Person.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500")
+    })
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable String id) {
-        Optional<Person> personOpt = personRepository
-            .findById(UUID.fromString(id));
+    public ResponseEntity<Object> getById(@PathVariable UUID id) {
+        Optional<Person> person = this.personRepository.findById(id);
 
-        return personOpt.isPresent() 
-            ? ResponseEntity.ok(personOpt.get())
-            : ResponseEntity.notFound().build();
+        return person.isPresent()
+                ? ResponseEntity.ok(person.get())
+                : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("")
-    public ResponseEntity<Object> create(@Valid @RequestBody PersonDTO personDTO) {
-        var pes = new Person(); 
-        BeanUtils.copyProperties(personDTO, pes);
-
-        try {
-            return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body( personRepository.save(pes) );
-        } catch(Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Falha ao criar pessoa");
-        }
+    @SecurityRequirement(name = "Authorization")
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Object> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(personRepository.findByNome(name));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable String id, 
-                    @Valid @RequestBody PersonDTO personDTO) {
-        UUID uuid;
-        try { uuid = UUID.fromString(id); }
-        catch(Exception e) {
-            return ResponseEntity
-                .badRequest()
-                .body("Formato de UUID inválido");
-        }
-
-        var person = personRepository.findById(uuid);
-
-        if(person.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        var personToUpdate = person.get();
-        BeanUtils.copyProperties(personDTO, personToUpdate);
-        personToUpdate.setUpdatedAt(LocalDateTime.now());
-
-        try {
-            return ResponseEntity.ok()
-            .body( personRepository.save(personToUpdate));
-        } catch(Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Falha ao atualizar pessoa");
-        }
-    }
-
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable String id) {
-        UUID uuid;
-        try { 
-            uuid = UUID.fromString(id); 
-        }
-        catch(Exception e) {
-            return ResponseEntity
-                .badRequest()
-                .body("Formato de UUID inválido");
-        }
+    public ResponseEntity<Object> delete(@PathVariable UUID id) {
+        var person = personRepository.findById(id);
 
-        var person = personRepository.findById(uuid);
-
-        if(person.isEmpty())
+        if (person.isEmpty())
             return ResponseEntity.notFound().build();
 
-        try {
-            personRepository.delete(person.get());
-            return ResponseEntity.ok().build();
-        } catch(Exception e) {
-            e.printStackTrace();
+        personRepository.delete(person.get());
+        return ResponseEntity.ok().build();
+    }
 
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
+    @SecurityRequirement(name = "Authorization")
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody PersonDTO personDTO) {
+        var person = this.personRepository.findById(id);
+
+        if (person.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        // Verificar se já existe uma pessoa com este e-mail
+        if (this.personRepository.existsByEmail(personDTO.getEmail())
+                && !this.personRepository.existsByIdAndEmail(person.get().getId(), personDTO.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Message.b("Conflito: O e-mail já está em uso"));
         }
+
+        // Criar um novo objeto, copiar os valores do DTO e setar os atributos imutáveis
+        var personToUpdate = new Person();
+        BeanUtils.copyProperties(personDTO, personToUpdate);
+        personToUpdate.setId(person.get().getId());
+        personToUpdate.setCreatedAt(person.get().getCreatedAt());
+        personToUpdate.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
+
+        return ResponseEntity.ok().body(this.personRepository.save(personToUpdate));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
