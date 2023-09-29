@@ -1,0 +1,777 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: Person
+    description: Endpoints relacionados a pessoas
+  - name: Auth
+    description: Endpoints relacionados à autenticação
+  - name: Tour
+    description: Endpoints relacionados a passeios
+  - name: Payment
+    description: Endpoints relacionados a pagamentos
+  - name: Booking
+    description: Endpoints relacionados a reservas
+paths:
+  /tour/{id}:
+    get:
+      tags:
+        - Tour
+      summary: Obtém detalhes de um passeio por ID
+      description: Retorna informações detalhadas de um passeio com base no ID fornecido.
+      operationId: getById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tour'
+          
+    put:
+      tags:
+        - Tour
+      summary: Atualiza um passeio por ID
+      description: Atualiza as informações de um passeio existente com base no ID.
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TourDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+
+
+    delete:
+      tags:
+        - Tour
+      summary: Deleta um passeio por ID
+      description: Apaga um passeio existente com base no ID.
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /person/{id}:
+    get:
+      tags:
+        - Person
+      summary: Busca pessoa por ID
+      description: Obtém informações de uma pessoa através de seu ID.
+      operationId: getById_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+      security:
+        - Authorization: []
+    put:
+      tags:
+        - Person
+      summary: Atualiza uma pessoa por ID
+      description: Atualiza as informações de uma pessoa existente com base no ID.
+      operationId: update_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+
+    delete:
+      tags:
+        - Person
+      summary: Deleta uma pessoa por ID
+      description: Apaga uma pessoa existente com base no ID.
+      operationId: delete_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+            
+  /payment/{id}:
+    get:
+      tags:
+        - Payment
+      summary: Obtém detalhes de um pagamento por ID
+      description: Retorna informações detalhadas de um pagamento com base no ID fornecido.
+      operationId: getById_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+    put:
+      tags:
+        - Payment
+      summary: Atualiza um pagamento por ID
+      description: Atualiza as informações de um pagamento existente com base no ID.
+      operationId: update_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+
+    delete:
+      tags:
+        - Payment
+      summary: Deleta um pagamento por ID
+      description: Apaga um pagamento existente com base no ID.
+      operationId: delete_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /booking/{id}:
+    get:
+      tags:
+        - Booking
+      summary: Obtém detalhes de uma reserva por ID
+      description: Retorna informações detalhadas de uma reserva com base no ID fornecido.
+      operationId: getById_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+    put:
+      tags:
+        - Booking
+      summary: Atualiza uma reserva por ID
+      description: Atualiza as informações de uma reserva existente com base no ID.
+      operationId: update_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+
+    delete:
+      tags:
+        - Booking
+      summary: Deleta uma reserva por ID
+      description: Apaga uma reserva existente com base no ID.
+      operationId: delete_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /tour:
+    get:
+      tags:
+        - Tour
+      summary: Lista todos os passeios
+      description: Retorna uma lista de todos os passeios disponíveis.
+      operationId: getAll
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tour'
+            
+  
+    post:
+      tags:
+        - Tour
+      summary: Cria um novo passeio
+      description: Cria um novo passeio com base nos dados fornecidos.
+      operationId: createTour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TourDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /person:
+    get:
+      tags:
+        - Person
+      summary: Lista todas as pessoas
+      description: Retorna uma lista de todas as pessoas cadastradas.
+      operationId: getAll_1
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PagePerson'
+  
+    post:
+      tags:
+        - Person
+      summary: Cria uma nova pessoa
+      description: Cria uma nova pessoa com base nos dados fornecidos.
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /payment:
+    get:
+      tags:
+        - Payment
+      summary: Lista todos os pagamentos
+      description: Retorna uma lista de todos os pagamentos registrados.
+      operationId: getAll_2
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+  
+    post:
+      tags:
+        - Payment
+      summary: Registra um novo pagamento
+      description: Registra um novo pagamento com base nos dados fornecidos.
+      operationId: create_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /booking:
+    get:
+      tags:
+        - Booking
+      summary: Lista todas as reservas
+      description: Retorna uma lista de todas as reservas efetuadas.
+      operationId: getAll_3
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+  
+    post:
+      tags:
+        - Booking
+      summary: Cria uma nova reserva
+      description: Cria uma nova reserva com base nos dados fornecidos.
+      operationId: create_3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /auth:
+    post:
+      tags:
+        - Auth
+      summary: Realiza login
+      description: Realiza a autenticação do usuário.
+      operationId: loginHandler
+      parameters:
+        - name: expires-in
+          in: header
+          required: false
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+
+  /person/name/{name}:
+    get:
+      tags:
+        - Person
+      summary: Busca pessoa por nome
+      description: Obtém informações de uma pessoa pelo nome.
+      operationId: getByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    TourDTO:
+      required:
+        - agenciaId
+        - destino
+        - itinerario
+        - preco
+      type: object
+      properties:
+        preco:
+          type: number
+          format: double
+        itinerario:
+          type: string
+        destino:
+          type: string
+        agenciaId:
+          type: string
+          format: uuid
+    PersonDTO:
+      required:
+        - cpfCnpj
+        - email
+        - nome
+        - senha
+        - tipo
+      type: object
+      properties:
+        nome:
+          maxLength: 100
+          minLength: 2
+          type: string
+        email:
+          type: string
+        senha:
+          maxLength: 2147483647
+          minLength: 5
+          type: string
+        nascimento:
+          type: string
+          format: date-time
+        cpfCnpj:
+          maxLength: 14
+          minLength: 11
+          type: string
+        tipo:
+          type: string
+          enum:
+            - CLIENTE
+            - AGENCIA_VIAGEM
+    PaymentDTO:
+      required:
+        - dataPagamento
+        - reservaId
+        - valor
+      type: object
+      properties:
+        reservaId:
+          type: string
+          format: uuid
+        valor:
+          type: number
+          format: double
+        dataPagamento:
+          type: string
+          format: date-time
+    BookingDTO:
+      required:
+        - agenciaId
+        - clienteId
+        - dataFinal
+        - dataInicial
+        - passeiosIds
+      type: object
+      properties:
+        dataInicial:
+          type: string
+          format: date-time
+        dataFinal:
+          type: string
+          format: date-time
+        clienteId:
+          type: string
+          format: uuid
+        agenciaId:
+          type: string
+          format: uuid
+        passeiosIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    AuthDTO:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          maxLength: 2147483647
+          minLength: 5
+          type: string
+        password:
+          maxLength: 2147483647
+          minLength: 5
+          type: string
+    Person:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        nome:
+          type: string
+        email:
+          type: string
+        nascimento:
+          type: string
+          format: date-time
+        tipo:
+          type: string
+          enum:
+            - CLIENTE
+            - AGENCIA_VIAGEM
+        cpf:
+          type: string
+    Tour:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        agencia:
+          $ref: '#/components/schemas/Person'
+        preco:
+          type: number
+          format: double
+        itinerario:
+          type: string
+        destino:
+          type: string
+    Pageable:
+      type: object
+      properties:
+        page:
+          minimum: 0
+          type: integer
+          format: int32
+        size:
+          minimum: 1
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            type: string
+    PagePerson:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        first:
+          type: boolean
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        last:
+          type: boolean
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: '#/components/schemas/SortObject'
+    SortObject:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        valor:
+          type: number
+          format: double
+        dataPagamento:
+          type: string
+          format: date-time
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        dataInicial:
+          type: string
+          format: date-time
+        dataFinal:
+          type: string
+          format: date-time
+        cliente:
+          $ref: '#/components/schemas/Person'
+        passeios:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tour'
+        pagamento:
+          $ref: '#/components/schemas/Payment'
+
