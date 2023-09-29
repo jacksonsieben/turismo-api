@@ -29,6 +29,8 @@ import lombok.Setter;
 public class Person extends BaseModel implements UserDetails{
     private String nome;
     private String email;
+
+    @JsonIgnore
     private String senha;
     @Column(nullable = true)
     private LocalDateTime nascimento;

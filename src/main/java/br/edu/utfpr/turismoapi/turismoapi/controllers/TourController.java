@@ -26,7 +26,7 @@ import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/Tour")
+@RequestMapping("/tour")
 public class TourController {
     @Autowired
     private TourRepository tourRepository;

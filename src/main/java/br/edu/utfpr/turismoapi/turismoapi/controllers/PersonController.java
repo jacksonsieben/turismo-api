@@ -43,7 +43,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/Person")
+@RequestMapping("/person")
 @CrossOrigin(origins = "*")
 @Tag(name = "Person", description = "Person resource endpoints")
 public class PersonController {
@@ -85,7 +85,7 @@ public class PersonController {
     @SecurityRequirement(name = "Authorization")
     @GetMapping
     public ResponseEntity<Page<Person>> getAll(
-            @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok().body(personRepository.findAll(pageable));
     }
 

@@ -30,6 +30,7 @@ public class PersonDTO {
     private String email;
 
     @NotBlank(message = "Senha é obrigatória")
+    @Size(min=5, message = "A senha deve conter no minimo 5 caracteres")
     private String senha;
 
     @PastOrPresent

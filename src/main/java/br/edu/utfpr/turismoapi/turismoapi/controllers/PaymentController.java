@@ -25,7 +25,7 @@ import br.edu.utfpr.turismoapi.turismoapi.repositories.PaymentRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/Payment")
+@RequestMapping("/payment")
 public class PaymentController {
     @Autowired
     private PaymentRepository paymentRepository;
