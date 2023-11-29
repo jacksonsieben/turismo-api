@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'br.edu.utfpr.turismoapi'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
 	sourceCompatibility = '17'
@@ -20,6 +20,16 @@ configurations {
 repositories {
 	mavenCentral()
 }
+// jar {
+//     manifest {
+//         attributes(
+//             'Main-Class': 'br.edu.utfpr.turismoapi.turismoapi.TurismoApiApplication' // Substitua pelo caminho da sua classe principal
+//         )
+//     }
+    
+//     archiveFileName = 'app.jar' // Defina o novo nome do arquivo JAR
+// }
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
