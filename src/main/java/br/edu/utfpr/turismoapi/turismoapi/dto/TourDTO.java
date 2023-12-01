@@ -1,7 +1,5 @@
 package br.edu.utfpr.turismoapi.turismoapi.dto;
 
-import java.util.UUID;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -29,5 +27,8 @@ public class TourDTO {
 
     @NotBlank(message = "Agência é obrigatório!")
     private String agenciaId;
+
+    @NotBlank(message = "Link da imagem é obrigatório!")
+    private String imagem;
 
 }

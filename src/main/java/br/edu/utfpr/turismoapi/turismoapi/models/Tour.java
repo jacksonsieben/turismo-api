@@ -32,6 +32,7 @@ public class Tour extends BaseModel{
     private double preco;
     private String itinerario;
     private String destino;
+    private String imagem;
     @ManyToMany(mappedBy = "passeios")
     @JsonIgnore
     private List<Booking> reservas;
