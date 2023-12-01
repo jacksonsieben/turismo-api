@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                                                                                                                      // stateless
 
         // Set unauthorized requests exception handler
+        /*
         http = http
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(
@@ -51,7 +52,7 @@ public class WebSecurityConfig {
                                             HttpServletResponse.SC_UNAUTHORIZED,
                                             ex.getMessage());
                                 }));
-
+*/
         // Set permissions on endpoints
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
