@@ -40,4 +40,7 @@ public class PersonDTO {
     private String cpfCnpj;
     @NotNull(message = "Tipo é obrigatório")
     private TipoPessoaEnum tipo;
+
+
+    
 }

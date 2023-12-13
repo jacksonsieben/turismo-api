@@ -50,7 +50,6 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -162,4 +161,6 @@ public class PersonController {
 
         return errors;
     }
+
+    
 }

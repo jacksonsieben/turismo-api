@@ -44,25 +44,28 @@ public class WebSecurityConfig {
 
         // Set unauthorized requests exception handler
         /*
-        http = http
-                .exceptionHandling(handling -> handling
-                        .authenticationEntryPoint(
-                                (request, response, ex) -> {
-                                    response.sendError(
-                                            HttpServletResponse.SC_UNAUTHORIZED,
-                                            ex.getMessage());
-                                }));
-*/
+         * http = http
+         * .exceptionHandling(handling -> handling
+         * .authenticationEntryPoint(
+         * (request, response, ex) -> {
+         * response.sendError(
+         * HttpServletResponse.SC_UNAUTHORIZED,
+         * ex.getMessage());
+         * }));
+         */
         // Set permissions on endpoints
-        
+
         http.authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(HttpMethod.GET, "/booking").permitAll()
+                .requestMatchers(HttpMethod.GET, "/booking/{id}").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers(HttpMethod.POST, "/person").permitAll()
                 .requestMatchers(HttpMethod.POST, "/person").permitAll()
-                .requestMatchers( "/api-docs/**").permitAll()
+                .requestMatchers("/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/index.html").permitAll()
                 .requestMatchers(HttpMethod.GET, "/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+
                 .anyRequest().authenticated());
 
         // Add JWT token filter

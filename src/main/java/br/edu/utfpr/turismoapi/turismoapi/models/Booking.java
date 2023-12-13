@@ -1,5 +1,6 @@
 package br.edu.utfpr.turismoapi.turismoapi.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,24 +29,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "tb_booking")
 public class Booking extends BaseModel {
-    private LocalDateTime dataInicial;
-    private LocalDateTime dataFinal;
-    
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="cliente_id", nullable = false)
-    private Person cliente;
-    
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
-    @JoinColumn(name="agencia_id", nullable = false)
+    private LocalDate dataInicial;
+    private LocalDate dataFinal;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "booking_client", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "cliente_id"))
+    private List<Person> clientes;
+
+    @ManyToOne
+    @JoinColumn(name = "agencia_id", nullable = false)
     private Person agencia;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "booking_tour",
-            joinColumns = @JoinColumn(name = "passeio_id"),
-            inverseJoinColumns = @JoinColumn(name = "reserva_id")
-    )
+    @JoinTable(name = "booking_tour", joinColumns = @JoinColumn(name = "passeio_id"), inverseJoinColumns = @JoinColumn(name = "reserva_id"))
     private List<Tour> passeios;
 
     @OneToOne(mappedBy = "reserva")

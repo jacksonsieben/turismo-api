@@ -25,7 +25,7 @@ public class TourDTO {
     @NotBlank(message = "Destino é obrigatório!")
     private String destino;
 
-    @NotBlank(message = "Agência é obrigatório!")
+    @NotNull
     private String agenciaId;
 
     @NotBlank(message = "Link da imagem é obrigatório!")

@@ -14,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import br.edu.utfpr.turismoapi.turismoapi.utils.TipoPessoaEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_person")
-public class Person extends BaseModel implements UserDetails{
+public class Person extends BaseModel implements UserDetails {
     private String nome;
     private String email;
 
@@ -36,7 +38,7 @@ public class Person extends BaseModel implements UserDetails{
     private LocalDateTime nascimento;
     private TipoPessoaEnum tipo;
     private String cpf;
-    
+
     @Override
     @JsonIgnore
     public String getUsername() {
@@ -58,7 +60,7 @@ public class Person extends BaseModel implements UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if(tipo != null)
+        if (tipo != null)
             authorities.add(new SimpleGrantedAuthority(tipo.name()));
 
         return authorities;
@@ -88,5 +90,8 @@ public class Person extends BaseModel implements UserDetails{
         return true;
     }
 
+    @ManyToMany(mappedBy = "clientes", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Booking> reservas;
 
 }

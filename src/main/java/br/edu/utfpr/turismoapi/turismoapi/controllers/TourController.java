@@ -50,7 +50,7 @@ public class TourController {
         try {
             Tour tour = new Tour();
             BeanUtils.copyProperties(tourDTO, tour);
-    
+
             // Busque e defina a agência com base no ID fornecido no DTO
             Optional<Person> agenciaOpt = personRepository.findById(UUID.fromString(tourDTO.getAgenciaId().toString()));
             if (agenciaOpt.isPresent() && agenciaOpt.get().getTipo() == TipoPessoaEnum.AGENCIA_VIAGEM) {
@@ -58,7 +58,7 @@ public class TourController {
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Agência não encontrada");
             }
-    
+
             tourRepository.save(tour);
             return ResponseEntity.status(HttpStatus.CREATED).body(tour);
         } catch (Exception e) {
@@ -66,7 +66,6 @@ public class TourController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falha ao criar passeio");
         }
     }
-    
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody TourDTO tourDTO) {
